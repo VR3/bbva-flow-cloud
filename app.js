@@ -1,4 +1,4 @@
- /**
+/**
  * Module dependencies.
  */
 const express = require('express');
@@ -18,6 +18,7 @@ const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const figlet = require('figlet');
+const https = require('https');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -109,38 +110,36 @@ let t = 0;
  */
 app.post('/', (req, res) => {
   ++t;
-  req.body.data.observations.map(obs => {
+  req.body.data.observations.map((obs) => {
     /**
      * This will usually be a database call.
      * Hackathon Scope, hackathon scope.
      * Sure boy, hackathon scope... !
      */
     if (obs.clientMac === '40:3f:8c:1e:27:05' && t < 5) {
-
-      var sendNotification = function(data) {
-        var headers = {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "Basic YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5"
+      const sendNotification = function sendNotification(data) {
+        const headers = {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: 'Basic YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5'
         };
 
-        var options = {
-          host: "onesignal.com",
+        const options = {
+          host: 'onesignal.com',
           port: 443,
-          path: "/api/v1/notifications",
-          method: "POST",
-          headers: headers
+          path: '/api/v1/notifications',
+          method: 'POST',
+          headers
         };
 
-        var https = require('https');
-        var req = https.request(options, function(res) {
-          res.on('data', function(data) {
-            console.log("Response:");
+        const req = https.request(options, (res) => {
+          res.on('data', (data) => {
+            console.log('Response:');
             console.log(JSON.parse(data));
           });
         });
 
-        req.on('error', function(e) {
-          console.log("ERROR:");
+        req.on('error', (e) => {
+          console.log('ERROR:');
           console.log(e);
         });
 
@@ -148,44 +147,42 @@ app.post('/', (req, res) => {
         req.end();
       };
 
-      var message = {
-        app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
+      const message = {
+        app_id: '850af6fc-6f49-4aa6-93db-485b39ea917d',
         contents: {
-           "en" : 'Acercate y escanea el codigo QR en el cajero.',
+          en: 'Acercate y escanea el codigo QR en el cajero.',
         },
         title: 'Oscar ¡Tu retiro esta listo!',
         url: 'bbvaflowapp://scanner/',
-        included_segments: ["All"]
+        included_segments: ['All']
       };
 
       sendNotification(message);
-
-    } else if(obs.clientMac === 'ac:5f:3e:3f:91:a5' && t < 5) {
-
-      var sendNotification = function(data) {
-        var headers = {
-          "Content-Type": "application/json; charset=utf-8",
-          "Authorization": "Basic YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5"
+    } else if (obs.clientMac === '8c:45:00:90:f0:e8' && t < 5) {
+      ++t;
+      const sendNotification = function sendNotification(data) {
+        const headers = {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: 'Basic YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5'
         };
 
-        var options = {
-          host: "onesignal.com",
+        const options = {
+          host: 'onesignal.com',
           port: 443,
-          path: "/api/v1/notifications",
-          method: "POST",
-          headers: headers
+          path: '/api/v1/notifications',
+          method: 'POST',
+          headers
         };
 
-        var https = require('https');
-        var req = https.request(options, function(res) {
-          res.on('data', function(data) {
-            console.log("Response:");
+        const req = https.request(options, (res) => {
+          res.on('data', (data) => {
+            console.log('Response:');
             console.log(JSON.parse(data));
           });
         });
 
-        req.on('error', function(e) {
-          console.log("ERROR:");
+        req.on('error', (e) => {
+          console.log('ERROR:');
           console.log(e);
         });
 
@@ -193,18 +190,18 @@ app.post('/', (req, res) => {
         req.end();
       };
 
-      var message = {
-        app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
+      const message = {
+        app_id: '850af6fc-6f49-4aa6-93db-485b39ea917d',
         contents: {
-           "en" : 'Acercate y escanea el codigo QR en el cajero.',
+          en: 'Acercate y escanea el codigo QR en el cajero.',
         },
-        title: 'Oscar ¡Tu retiro esta listo!',
+        title: 'Patrick, tu retiro esta listo!',
         url: 'bbvaflowapp://scanner/',
-        included_segments: ["All"]
+        message: 'Acercate y escanea el codigo QR',
+        included_segments: ['All']
       };
 
       sendNotification(message);
-
     }
   });
   // Answer
@@ -237,7 +234,7 @@ app.get('/users/:id/flows', userController.getUserFlows);
  */
 // Create a new flow.
 app.post('/flows/create', flowController.createFlow);
- // Get a flow.
+// Get a flow.
 app.get('/flows/:id', flowController.getFlow);
 // Delete a flow.
 app.delete('/flows/:id/delete', flowController.deleteFlow);
@@ -261,7 +258,7 @@ if (process.env.NODE_ENV === 'development') {
   // only use in development
   app.use(errorHandler());
 } else {
-  app.use(function(err, req, res, next) {
+  app.use((err, req, res, next) => {
     console.error(err);
     res.status(500).send('Server Error');
   });
