@@ -51,11 +51,15 @@ mongoose.connection.on('connected', () => {
   console.log('MongoDB Connected. URI: ', process.env.MONGODB_URI);
 });
 
-var onesignal = new OneSignal.Client({    
-  userAuthKey: 'ZjU4ZjZmZjItNjJiNy00YTFjLWI5MGEtYjYyZDliNjM0MWVj',    
-  // note that "app" must have "appAuthKey" and "appId" keys    
-  app: { appAuthKey: '850af6fc-6f49-4aa6-93db-485b39ea917d', appId: 'YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5' }    
+/**
+ * Push Notifications Configuration.
+ */
+var onesignal = new OneSignal.Client({
+  userAuthKey: 'ZjU4ZjZmZjItNjJiNy00YTFjLWI5MGEtYjYyZDliNjM0MWVj',
+  // note that "app" must have "appAuthKey" and "appId" keys
+  app: { appAuthKey: '850af6fc-6f49-4aa6-93db-485b39ea917d', appId: 'YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5' }
 });
+
 /**
  * Express configuration.
  */
@@ -118,44 +122,45 @@ app.post('/', (req, res) => {
      * Hackathon Scope, hackathon scope.
      * Sure boy, hackathon scope... !
      */
-    if (obs.clientMac === '40:3F:8C:1E:27:05'.toLowerCase()) {
+    if (obs.clientMac === '40:3f:8c:1e:27:05') {
       var oscarPush = new onesignal.Notification({
         contents: {
-          title: 'Oscar, tu retiro está listo !', 
-          message: 'Acercate y escanea el código QR en el cajero.',
+          title: 'Oscar ¡Tu retiro está listo!',
+          message: 'Acércate y escanea el código QR en el cajero.',
           url: 'bbvaflowapp://scanner/',
           flow_id: '5b951dfdb1757c5b960852e3',
           token: 'c73ceeef1700bb7fe6e712646976fd97',
         }
       })
       oscarPush.postBody["included_segments"] = ["Active Users"];
-      onesignal.sendNotification(oscarPush, function (err, httpResponse,data) {    
-        if (err) {    
-            console.log('Something went wrong...');    
-        } else {    
-            console.log(data, httpResponse.statusCode);    
-        }    
-     });    
-    } else if(obs.clientMac === 'AC:5F:3E:3F:91:A5'.toLowerCase()) {
+      onesignal.sendNotification(oscarPush, function (err, httpResponse,data) {
+        if (err) {
+            console.log('Something went wrong...');
+        } else {
+            console.log(data, httpResponse.statusCode);
+        }
+     });
+    } else if(obs.clientMac === 'ac:5f:3e:3f:91:a5') {
       var pedroPush = new onesignal.Notification({
         contents: {
-          title: 'Pedro, tu retiro está listo !', 
-          message: 'Acercate y escanea el código QR en el cajero.',
+          title: 'Pedro ¡Tu retiro está listo!',
+          message: 'Acércate y escanea el código QR en el cajero.',
           url: 'bbvaflowapp://scanner/',
           flow_id: '5b951dfdb1757c5b960852e3',
           token: 'c73ceeef1700bb7fe6e712646976fd97',
         }
       })
       pedroPush.postBody["included_segments"] = ["Active Users"];
-      onesignal.sendNotification(pedroPush, function (err, httpResponse,data) {    
-        if (err) {    
-            console.log('Something went wrong...');    
-        } else {    
+      onesignal.sendNotification(pedroPush, function (err, httpResponse,data) {
+        if (err) {
+            console.log('Something went wrong...');
+        } else {
             console.log(data, httpResponse.statusCode);
-        }    
-     }); 
+        }
+     });
     }
   });
+  // Answer
   res.status(200).send('');
 });
 
@@ -163,7 +168,7 @@ app.post('/', (req, res) => {
  * Fake BBVA Bancomer Transactional API.
  *
  * This API will fake the transactional operations the bank
- * currently hasn't implemented on the public API Marketplace.
+ * currently hasn't published on the API Marketplace.
  */
 
 /**
@@ -191,6 +196,8 @@ app.get('/flows/:id', flowController.getFlow);
 app.delete('/flows/:id/delete', flowController.deleteFlow);
 // Execute a flow.
 app.post('/flows/:id/run', flowController.runFlow);
+// Get Flow if Token is used.
+app.post('/flows/checkToken', flowController.checkToken);
 
 /**
  * Tokens (QR Codes).

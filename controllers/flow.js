@@ -19,7 +19,6 @@ exports.createFlow = (req, res) => {
       status: 'fail',
       payload: errors,
     });
-
   }
 
   User.findById(req.body.userId)
@@ -152,6 +151,43 @@ exports.runFlow = (req, res) => {
             });
           });
         });
+    })
+    .catch(err => res.json({
+      status: 'error',
+      error: err,
+    }));
+};
+
+/**
+ * POST /flows/checkToken
+ * Check if a token is used and run transaction.
+ */
+exports.checkToken = (req, res) => {
+  // Validation
+  req.assert('token', 'The token is required').notEmpty();
+
+  const errors = req.validationErrors();
+
+  if (errors) {
+    return res.json({
+      status: 'fail',
+      payload: errors,
+    });
+  }
+
+  Flow.findOne({ tokenUsed: req.body.token })
+    .exec()
+    .then((flow) => {
+      if (!flow) {
+        return res.json({
+          status: 'fail',
+          payload: [{ msg: 'The token is not used' }],
+        });
+      }
+      return res.json({
+        status: 'success',
+        payload: flow,
+      });
     })
     .catch(err => res.json({
       status: 'error',

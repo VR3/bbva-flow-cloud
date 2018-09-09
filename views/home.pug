@@ -11,11 +11,16 @@ html
     link(rel='stylesheet', href='/css/main.css')
 
   body
-    h1 Hola!
-    #qrcode
-    button.btn.btn-info#refreshButton
-      i.fas.fa-redo
-      |  Generar de nuevo
+    #qrScreen
+      h1 Hola!
+      #qrcode
+      button.btn.btn-info#refreshButton
+        i.fas.fa-redo
+        |  Generar de nuevo
+    #withdrawScreen
+      h1 Retirar Dinero
+      h4 Sacando 100 pesaurios
+      a.btn.btn-success(href="/") Volver a la Página Principal
     script(src='/js/lib/jquery.min.js')
     script(src='/js/lib/bootstrap.min.js')
     script(src='/js/lib/popper.min.js')
@@ -23,12 +28,31 @@ html
     script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js")
 
     script.
+      // Token
+      let token = '';
+
+      // Beginner QR Code.
+      $(document).ready(() => {
+        $.ajax({
+          url: '/tokens/create',
+          type: 'GET',
+          success: function(response) {
+            token = response.payload.payload;
+            $('#qrcode').qrcode(response.payload.payload);
+          },
+          error: () => {
+            console.log('Algo ha salido mal.');
+          },
+        });
+      });
+
       // Function to update QR Code.
       $('#refreshButton').on('click', e => {
         $.ajax({
           url: '/tokens/create',
           type: 'GET',
           success: function(response) {
+            token = response.payload.payload;
             $('#qrcode').empty();
             $('#qrcode').qrcode(response.payload.payload);
           },
@@ -37,3 +61,24 @@ html
           },
         });
       });
+
+      // Interval
+      let interval = setInterval(() => {
+        $.ajax({
+          url: '/flows/checkToken',
+          type: 'POST',
+          data: {
+            token,
+          },
+          success: function(response) {
+            console.log(response);
+            if (response.status === 'success') {
+              $('#qrScreen').hide();
+              $('#withdrawScreen').show();
+            }
+          },
+          error: () => {
+            console.log('Algo ha salido mal.');
+          },
+        });
+      },20000)
