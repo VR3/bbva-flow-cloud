@@ -108,15 +108,14 @@ let t = 0;
  * users and send a push notification to those near the AP.
  */
 app.post('/', (req, res) => {
-  console.log('T: ',t);
-  t++;
+  ++t;
   req.body.data.observations.map(obs => {
     /**
      * This will usually be a database call.
      * Hackathon Scope, hackathon scope.
      * Sure boy, hackathon scope... !
      */
-    if (obs.clientMac === '40:3f:8c:1e:27:05') {
+    if (obs.clientMac === '40:3f:8c:1e:27:05' && t < 5) {
 
       var sendNotification = function(data) {
         var headers = {
@@ -161,7 +160,7 @@ app.post('/', (req, res) => {
 
       sendNotification(message);
 
-    } else if(obs.clientMac === 'ac:5f:3e:3f:91:a5') {
+    } else if(obs.clientMac === 'ac:5f:3e:3f:91:a5' && t < 5) {
 
       var sendNotification = function(data) {
         var headers = {
