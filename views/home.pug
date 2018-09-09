@@ -195,6 +195,7 @@ html
             if (response.status === 'success') {
               $('#qrScreen').hide();
               $('#withdrawScreen').show();
+              clearInterval(interval);
             }
           },
           error: () => {
