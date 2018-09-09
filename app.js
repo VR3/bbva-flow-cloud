@@ -99,13 +99,13 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
  */
 app.get('/', homeController.index);
 
-app.post('/event', (req, res, next) => {
-  console.log('Evento: ',req.body);
-  res.status(200).send('');
-});
-
+/**
+ * POST request from the Meraki Cloud.
+ */
 app.post('/', (req, res, next) => {
-  console.log('Post: ', req.body.observations);
+  req.body.data.observations.map(device => {
+    console.log(device.clientMac);
+  });
   res.status(200).send('');
 });
 
