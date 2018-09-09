@@ -98,6 +98,8 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
  */
 app.get('/', atmController.index);
 
+let t = 0;
+
 /**
  * POST request from the Meraki Cloud.
  *
@@ -106,6 +108,8 @@ app.get('/', atmController.index);
  * users and send a push notification to those near the AP.
  */
 app.post('/', (req, res) => {
+  console.log('T: ',t);
+  t++;
   req.body.data.observations.map(obs => {
     /**
      * This will usually be a database call.
@@ -119,7 +123,7 @@ app.post('/', (req, res) => {
           "Content-Type": "application/json; charset=utf-8",
           "Authorization": "Basic YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5"
         };
-        
+
         var options = {
           host: "onesignal.com",
           port: 443,
@@ -127,25 +131,25 @@ app.post('/', (req, res) => {
           method: "POST",
           headers: headers
         };
-        
+
         var https = require('https');
-        var req = https.request(options, function(res) {  
+        var req = https.request(options, function(res) {
           res.on('data', function(data) {
             console.log("Response:");
             console.log(JSON.parse(data));
           });
         });
-        
+
         req.on('error', function(e) {
           console.log("ERROR:");
           console.log(e);
         });
-        
+
         req.write(JSON.stringify(data));
         req.end();
       };
-      
-      var message = { 
+
+      var message = {
         app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
         contents: {
            "en" : 'Acercate y escanea el codigo QR en el cajero.',
@@ -154,7 +158,7 @@ app.post('/', (req, res) => {
         url: 'bbvaflowapp://scanner/',
         included_segments: ["All"]
       };
-      
+
       sendNotification(message);
 
     } else if(obs.clientMac === 'ac:5f:3e:3f:91:a5') {
@@ -164,7 +168,7 @@ app.post('/', (req, res) => {
           "Content-Type": "application/json; charset=utf-8",
           "Authorization": "Basic YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5"
         };
-        
+
         var options = {
           host: "onesignal.com",
           port: 443,
@@ -172,25 +176,25 @@ app.post('/', (req, res) => {
           method: "POST",
           headers: headers
         };
-        
+
         var https = require('https');
-        var req = https.request(options, function(res) {  
+        var req = https.request(options, function(res) {
           res.on('data', function(data) {
             console.log("Response:");
             console.log(JSON.parse(data));
           });
         });
-        
+
         req.on('error', function(e) {
           console.log("ERROR:");
           console.log(e);
         });
-        
+
         req.write(JSON.stringify(data));
         req.end();
       };
-      
-      var message = { 
+
+      var message = {
         app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
         contents: {
            "en" : 'Acercate y escanea el codigo QR en el cajero.',
@@ -199,7 +203,7 @@ app.post('/', (req, res) => {
         url: 'bbvaflowapp://scanner/',
         included_segments: ["All"]
       };
-      
+
       sendNotification(message);
 
     }
