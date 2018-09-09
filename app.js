@@ -104,7 +104,6 @@ app.get('/', homeController.index);
  */
 app.post('/', (req, res) => {
   req.body.data.observations.map(obs => {
-    console.log(obs.clientMac);
     if (obs.clientMac === '40:3F:8C:1E:27:05') {
       figlet('Oscar 8==D', (err, data) => {
         if (!err) {
@@ -119,7 +118,6 @@ app.post('/', (req, res) => {
       });
     }
   });
-  console.log('Número de MACs: ', req.body.data.observations.length);
   res.status(200).send('');
 });
 
