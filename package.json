@@ -1,0 +1,23 @@
+{
+  "name": "bbva-flow-cloud",
+  "version": "1.0.0",
+  "description": "The backend microservice for the BBVA Hackathon 2018 application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VR3/bbva-flow-cloud.git"
+  },
+  "author": "VR3",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VR3/bbva-flow-cloud/issues"
+  },
+  "homepage": "https://github.com/VR3/bbva-flow-cloud#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "figlet": "^1.2.0"
+  }
+}
