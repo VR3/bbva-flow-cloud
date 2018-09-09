@@ -141,7 +141,7 @@ exports.runFlow = (req, res) => {
               payload: [{ msg: 'The flow does not exist' }],
             });
           }
-          flow.tokenUsed = token;
+          flow.tokenUsed = token.payload;
           return flow.save((err) => {
             if (err) { throw err; }
             token.remove();
