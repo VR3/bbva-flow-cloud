@@ -1,4 +1,4 @@
-/**
+ /**
  * Module dependencies.
  */
 const express = require('express');
@@ -18,6 +18,7 @@ const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const figlet = require('figlet');
+const OneSignal = require('onesignal-node');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -50,6 +51,11 @@ mongoose.connection.on('connected', () => {
   console.log('MongoDB Connected. URI: ', process.env.MONGODB_URI);
 });
 
+var onesignal = new OneSignal.Client({    
+  userAuthKey: 'ZjU4ZjZmZjItNjJiNy00YTFjLWI5MGEtYjYyZDliNjM0MWVj',    
+  // note that "app" must have "appAuthKey" and "appId" keys    
+  app: { appAuthKey: '850af6fc-6f49-4aa6-93db-485b39ea917d', appId: 'YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5' }    
+});
 /**
  * Express configuration.
  */
@@ -110,11 +116,44 @@ app.post('/', (req, res) => {
     /**
      * This will usually be a database call.
      * Hackathon Scope, hackathon scope.
+     * Sure boy, hackathon scope... !
      */
     if (obs.clientMac === '40:3F:8C:1E:27:05'.toLowerCase()) {
-      console.log('Oscar: ', obs);
+      var oscarPush = new onesignal.Notification({
+        contents: {
+          title: 'Oscar, tu retiro está listo !', 
+          message: 'Acercate y escanea el código QR en el cajero.',
+          url: 'bbvaflowapp://scanner/',
+          flow_id: '5b951dfdb1757c5b960852e3',
+          token: 'c73ceeef1700bb7fe6e712646976fd97',
+        }
+      })
+      oscarPush.postBody["included_segments"] = ["Active Users"];
+      onesignal.sendNotification(oscarPush, function (err, httpResponse,data) {    
+        if (err) {    
+            console.log('Something went wrong...');    
+        } else {    
+            console.log(data, httpResponse.statusCode);    
+        }    
+     });    
     } else if(obs.clientMac === 'AC:5F:3E:3F:91:A5'.toLowerCase()) {
-      console.log('Pedro: ', obs);
+      var pedroPush = new onesignal.Notification({
+        contents: {
+          title: 'Pedro, tu retiro está listo !', 
+          message: 'Acercate y escanea el código QR en el cajero.',
+          url: 'bbvaflowapp://scanner/',
+          flow_id: '5b951dfdb1757c5b960852e3',
+          token: 'c73ceeef1700bb7fe6e712646976fd97',
+        }
+      })
+      pedroPush.postBody["included_segments"] = ["Active Users"];
+      onesignal.sendNotification(pedroPush, function (err, httpResponse,data) {    
+        if (err) {    
+            console.log('Something went wrong...');    
+        } else {    
+            console.log(data, httpResponse.statusCode);
+        }    
+     }); 
     }
   });
   res.status(200).send('');

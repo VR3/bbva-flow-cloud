@@ -42,6 +42,7 @@
     "node-sass": "^4.9.3",
     "node-sass-middleware": "^0.11.0",
     "nodemailer": "^4.6.7",
+    "onesignal-node": "^2.0.0",
     "popper.js": "^1.14.4",
     "pug": "^2.0.3",
     "request": "^2.88.0",
