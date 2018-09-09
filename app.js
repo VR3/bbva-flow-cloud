@@ -145,16 +145,17 @@ app.post('/', (req, res) => {
         req.end();
       };
       
-      var message = { 
-        app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
-        contents: {
-            "en": {
+      var payload = { 
             "title": 'Oscar ¡Tu retiro esta listo!',
             "message": 'Acercate y escanea el codigo QR en el cajero.',
             "url": 'bbvaflowapp://scanner/',
             "flow_id": '5b951dfdb1757c5b960852e3',
             "token": 'c73ceeef1700bb7fe6e712646976fd97',
           }
+      var message = { 
+        app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
+        contents: {
+           "en" : JSON.stringify(payload)
         },
         included_segments: ["All"]
       };
@@ -195,15 +196,18 @@ app.post('/', (req, res) => {
         req.end();
       };
       
+      var payload = { 
+        "title": 'Pedro ¡Tu retiro esta listo!',
+        "message": 'Acercate y escanea el codigo QR en el cajero.',
+        "url": 'bbvaflowapp://scanner/',
+        "flow_id": '5b951dfdb1757c5b960852e3',
+        "token": 'c73ceeef1700bb7fe6e712646976fd97',
+      }
       var message = { 
         app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
-        contents: {"en": {
-          "title": 'Pedro ¡Tu retiro esta listo!',
-          "message": 'Acercate y escanea el codigo QR en el cajero.',
-          "url": 'bbvaflowapp://scanner/',
-          "flow_id": '5b951dfdb1757c5b960852e3',
-          "token": 'c73ceeef1700bb7fe6e712646976fd97',
-        }},
+        contents: {
+          "es" : JSON.stringify(payload)
+        },
         included_segments: ["All"]
       };
       
