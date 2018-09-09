@@ -132,7 +132,7 @@ html
               |  Generar de nuevo
         #withdrawScreen
           h1 Retirar Dinero
-          h4 Sacando 100 pesaurios
+          h4#amount
           a.btn.btn-success(href="/") Volver a la Página Principal
       footer.mastfoot.mt-auto
         .inner
@@ -195,6 +195,7 @@ html
             if (response.status === 'success') {
               $('#qrScreen').hide();
               $('#withdrawScreen').show();
+              $('#amount').text('La transacción por ' + response.payload.amount + ' ha sido realizada correctamente.')
               clearInterval(interval);
             }
           },
