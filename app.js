@@ -17,6 +17,7 @@ const mongoose = require('mongoose');
 const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
+const figlet = require('figlet');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -116,6 +117,17 @@ if (process.env.NODE_ENV === 'development') {
 app.listen(app.get('port'), () => {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
   console.log('  Press CTRL-C to stop\n');
+});
+
+/**
+ * Mandatory Figlet
+ */
+figlet('BBVA-Flow', (err, res) => {
+  if (err) {
+    console.log('Error: ', err);
+  } else {
+    console.log(res);
+  }
 });
 
 module.exports = app;
