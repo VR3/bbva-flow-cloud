@@ -76,10 +76,10 @@ app.use(session({
   })
 }));
 app.enable('trust proxy');
-app.use(rateLimit({
-  windowsMs: 60*100,
-  max: 1,
-}));
+// app.use(rateLimit({
+//   windowsMs: 60*100,
+//   max: 1,
+// }));
 app.use(flash());
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
