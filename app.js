@@ -18,7 +18,6 @@ const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const figlet = require('figlet');
-const rateLimit = require('express-rate-limit');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -76,10 +75,6 @@ app.use(session({
   })
 }));
 app.enable('trust proxy');
-// app.use(rateLimit({
-//   windowsMs: 60*100,
-//   max: 1,
-// }));
 app.use(flash());
 app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
@@ -105,17 +100,9 @@ app.get('/', homeController.index);
 app.post('/', (req, res) => {
   req.body.data.observations.map(obs => {
     if (obs.clientMac === '40:3F:8C:1E:27:05'.toLowerCase()) {
-      figlet('Oscar 8==D', (err, data) => {
-        if (!err) {
-          console.log(data);
-        }
-      });
+      console.log('Oscar: ', obs);
     } else if(obs.clientMac === 'AC:5F:3E:3F:91:A5'.toLowerCase()) {
-      figlet('Pedro 8==D', (err, data) => {
-        if (!err) {
-          console.log(data);
-        }
-      });
+      console.log('Pedro: ', obs);
     }
   });
   res.status(200).send('');
