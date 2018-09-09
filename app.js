@@ -105,7 +105,7 @@ app.post('/event', (req, res, next) => {
 });
 
 app.post('/', (req, res, next) => {
-  console.log('Post: ', req.body);
+  console.log('Post: ', req.body.observations);
   res.status(200).send('');
 });
 
