@@ -12,8 +12,28 @@ html
 
   body
     h1 Hola!
-
+    #qrcode
+    button.btn.btn-info#refreshButton
+      i.fas.fa-redo
+      |  Generar de nuevo
     script(src='/js/lib/jquery.min.js')
     script(src='/js/lib/bootstrap.min.js')
     script(src='/js/lib/popper.min.js')
     script(src='/js/main.js')
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js")
+
+    script.
+      // Function to update QR Code.
+      $('#refreshButton').on('click', e => {
+        $.ajax({
+          url: '/tokens/create',
+          type: 'GET',
+          success: function(response) {
+            $('#qrcode').empty();
+            $('#qrcode').qrcode(response.payload.payload);
+          },
+          error: () => {
+            console.log('Algo ha salido mal.');
+          },
+        });
+      });
