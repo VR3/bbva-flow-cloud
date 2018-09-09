@@ -95,7 +95,7 @@ app.get('/', homeController.index);
 
 app.post('/event', (req, res, next) => {
   console.log(req.body);
-  res.send('hola');
+  res.status(200).send('');
 });
 
 /**
