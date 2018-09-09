@@ -18,6 +18,7 @@ const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const figlet = require('figlet');
+const rateLimit = require('express-rate-limit');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -73,6 +74,11 @@ app.use(session({
     url: process.env.MONGODB_URI,
     autoReconnect: true,
   })
+}));
+app.enable('trust proxy');
+app.use(rateLimit({
+  windowsMs: 60*100,
+  max: 10,
 }));
 app.use(flash());
 app.use(lusca.xframe('SAMEORIGIN'));
