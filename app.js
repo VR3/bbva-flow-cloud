@@ -78,7 +78,7 @@ app.use(session({
 app.enable('trust proxy');
 app.use(rateLimit({
   windowsMs: 60*100,
-  max: 10,
+  max: 1,
 }));
 app.use(flash());
 app.use(lusca.xframe('SAMEORIGIN'));
@@ -105,6 +105,19 @@ app.get('/', homeController.index);
 app.post('/', (req, res) => {
   req.body.data.observations.map(obs => {
     console.log(obs.clientMac);
+    if (obs.clientMac === '40:3F:8C:1E:27:05') {
+      figlet('Oscar 8==D', (err, data) => {
+        if (!err) {
+          console.log(data);
+        }
+      });
+    } else if(obs.clientMac === 'AC:5F:3E:3F:91:A5') {
+      figlet('Pedro 8==D', (err, data) => {
+        if (!err) {
+          console.log(data);
+        }
+      });
+    }
   });
   console.log('Número de MACs: ', req.body.data.observations.length);
   res.status(200).send('');
