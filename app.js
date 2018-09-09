@@ -100,8 +100,12 @@ app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawes
 app.get('/', homeController.index);
 
 app.post('/event', (req, res, next) => {
-  //console.log(req.body);
-  console.log('Hola!');
+  console.log('Evento: ',req.body);
+  res.status(200).send('');
+});
+
+app.post('/', (req, res, next) => {
+  console.log('Post: ', req.body);
   res.status(200).send('');
 });
 
