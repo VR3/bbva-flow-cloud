@@ -18,7 +18,6 @@ const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const figlet = require('figlet');
-const OneSignal = require('onesignal-node');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -49,15 +48,6 @@ mongoose.connection.on('error', (err) => {
 });
 mongoose.connection.on('connected', () => {
   console.log('MongoDB Connected. URI: ', process.env.MONGODB_URI);
-});
-
-/**
- * Push Notifications Configuration.
- */
-var onesignal = new OneSignal.Client({
-  userAuthKey: 'ZjU4ZjZmZjItNjJiNy00YTFjLWI5MGEtYjYyZDliNjM0MWVj',
-  // note that "app" must have "appAuthKey" and "appId" keys
-  app: { appAuthKey: '850af6fc-6f49-4aa6-93db-485b39ea917d', appId: 'YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5' }
 });
 
 /**
@@ -123,41 +113,100 @@ app.post('/', (req, res) => {
      * Sure boy, hackathon scope... !
      */
     if (obs.clientMac === '40:3f:8c:1e:27:05') {
-      var oscarPush = new onesignal.Notification({
+
+      var sendNotification = function(data) {
+        var headers = {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "Basic YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5"
+        };
+        
+        var options = {
+          host: "onesignal.com",
+          port: 443,
+          path: "/api/v1/notifications",
+          method: "POST",
+          headers: headers
+        };
+        
+        var https = require('https');
+        var req = https.request(options, function(res) {  
+          res.on('data', function(data) {
+            console.log("Response:");
+            console.log(JSON.parse(data));
+          });
+        });
+        
+        req.on('error', function(e) {
+          console.log("ERROR:");
+          console.log(e);
+        });
+        
+        req.write(JSON.stringify(data));
+        req.end();
+      };
+      
+      var message = { 
+        app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
         contents: {
-          title: 'Oscar ¡Tu retiro está listo!',
-          message: 'Acércate y escanea el código QR en el cajero.',
-          url: 'bbvaflowapp://scanner/',
-          flow_id: '5b951dfdb1757c5b960852e3',
-          token: 'c73ceeef1700bb7fe6e712646976fd97',
-        }
-      })
-      oscarPush.postBody["included_segments"] = ["Active Users"];
-      onesignal.sendNotification(oscarPush, function (err, httpResponse,data) {
-        if (err) {
-            console.log('Something went wrong...');
-        } else {
-            console.log(data, httpResponse.statusCode);
-        }
-     });
+          "title": 'Oscar ¡Tu retiro está listo!',
+          "message": 'Acércate y escanea el código QR en el cajero.',
+          "url": 'bbvaflowapp://scanner/',
+          "flow_id": '5b951dfdb1757c5b960852e3',
+          "token": 'c73ceeef1700bb7fe6e712646976fd97',
+        },
+        included_segments: ["All"]
+      };
+  
+      
+      sendNotification(message);
+
     } else if(obs.clientMac === 'ac:5f:3e:3f:91:a5') {
-      var pedroPush = new onesignal.Notification({
+
+      var sendNotification = function(data) {
+        var headers = {
+          "Content-Type": "application/json; charset=utf-8",
+          "Authorization": "Basic YzVkYjZkZGYtNTVjOC00N2QzLWI2NWItZWE0MTAxNzA0YmE5"
+        };
+        
+        var options = {
+          host: "onesignal.com",
+          port: 443,
+          path: "/api/v1/notifications",
+          method: "POST",
+          headers: headers
+        };
+        
+        var https = require('https');
+        var req = https.request(options, function(res) {  
+          res.on('data', function(data) {
+            console.log("Response:");
+            console.log(JSON.parse(data));
+          });
+        });
+        
+        req.on('error', function(e) {
+          console.log("ERROR:");
+          console.log(e);
+        });
+        
+        req.write(JSON.stringify(data));
+        req.end();
+      };
+      
+      var message = { 
+        app_id: "850af6fc-6f49-4aa6-93db-485b39ea917d",
         contents: {
-          title: 'Pedro ¡Tu retiro está listo!',
-          message: 'Acércate y escanea el código QR en el cajero.',
-          url: 'bbvaflowapp://scanner/',
-          flow_id: '5b951dfdb1757c5b960852e3',
-          token: 'c73ceeef1700bb7fe6e712646976fd97',
-        }
-      })
-      pedroPush.postBody["included_segments"] = ["Active Users"];
-      onesignal.sendNotification(pedroPush, function (err, httpResponse,data) {
-        if (err) {
-            console.log('Something went wrong...');
-        } else {
-            console.log(data, httpResponse.statusCode);
-        }
-     });
+          "title": 'Pedro ¡Tu retiro está listo!',
+          "message": 'Acércate y escanea el código QR en el cajero.',
+          "url": 'bbvaflowapp://scanner/',
+          "flow_id": '5b951dfdb1757c5b960852e3',
+          "token": 'c73ceeef1700bb7fe6e712646976fd97',
+        },
+        included_segments: ["All"]
+      };
+      
+      sendNotification(message);
+
     }
   });
   // Answer
