@@ -103,10 +103,10 @@ app.get('/', homeController.index);
  * POST request from the Meraki Cloud.
  */
 app.post('/', (req, res) => {
-  console.log(req.body.data.observations.reduce((sum, client) => {
-    console.log('Cliente #' + sum + ': ' + client.clientMac);
-    return sum + 1;
-  }));
+  req.body.data.observations.map(obs => {
+    console.log(obs.clientMac);
+  });
+  console.log('Número de MACs: ', req.body.data.observations.length);
   res.status(200).send('');
 });
 
