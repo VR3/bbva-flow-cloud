@@ -27,7 +27,10 @@ dotenv.load({ path: '.env.example' });
 /**
  * Controllers (route handlers).
  */
-const homeController = require('./controllers/home');
+const atmController = require('./controllers/atm');
+const userController = require('./controllers/user');
+const flowController = require('./controllers/flow');
+const tokenController = require('./controllers/token');
 
 /**
  * Create Express server.
@@ -44,7 +47,7 @@ mongoose.connection.on('error', (err) => {
   process.exit();
 });
 mongoose.connection.on('connected', () => {
-  console.log('MongoDB Connected: ', process.env.MONGODB_URI);
+  console.log('MongoDB Connected. URI: ', process.env.MONGODB_URI);
 });
 
 /**
@@ -90,15 +93,24 @@ app.use('/js/lib', express.static(path.join(__dirname, 'node_modules/jquery/dist
 app.use('/webfonts', express.static(path.join(__dirname, 'node_modules/@fortawesome/fontawesome-free/webfonts'), { maxAge: 31557600000 }));
 
 /**
- * Primary app routes.
+ * Front End Routes.
+ * This is the unique route we are using to fake the ATM.
  */
-app.get('/', homeController.index);
+app.get('/', atmController.index);
 
 /**
  * POST request from the Meraki Cloud.
+ *
+ * This endpoint will handle all the comunication with the Cisco Meraki
+ * Scaning API. We continously look for the MAC Address of the *authenticated*
+ * users and send a push notification to those near the AP.
  */
 app.post('/', (req, res) => {
   req.body.data.observations.map(obs => {
+    /**
+     * This will usually be a database call.
+     * Hackathon Scope, hackathon scope.
+     */
     if (obs.clientMac === '40:3F:8C:1E:27:05'.toLowerCase()) {
       console.log('Oscar: ', obs);
     } else if(obs.clientMac === 'AC:5F:3E:3F:91:A5'.toLowerCase()) {
@@ -107,6 +119,47 @@ app.post('/', (req, res) => {
   });
   res.status(200).send('');
 });
+
+/**
+ * Fake BBVA Bancomer Transactional API.
+ *
+ * This API will fake the transactional operations the bank
+ * currently hasn't implemented on the public API Marketplace.
+ */
+
+/**
+ * User Routes.
+ * Routes for handling the users.
+ */
+
+// Create a user. (Fake Signup for demo purposes)
+app.post('/users/create', userController.createUser);
+// Get a user.
+app.get('/users/:id', userController.getUser);
+// Get all the flows from a user.
+app.get('/users/:id/flows', userController.getUserFlows);
+
+/**
+ * Flows.
+ * These are all the programmed transactions on the BBVA Bancomer
+ * mobile application.
+ */
+// Create a new flow.
+app.post('/flows/create', flowController.createFlow);
+ // Get a flow.
+app.get('/flows/:id', flowController.getFlow);
+// Delete a flow.
+app.delete('/flows/:id/delete', flowController.deleteFlow);
+// Execute a flow.
+app.post('/flows/:id/run', flowController.runFlow);
+
+/**
+ * Tokens (QR Codes).
+ * This endpoints allow us to generate new tokens for user
+ * verification.
+ */
+// Create a new Token.
+app.get('/tokens/create', tokenController.createToken);
 
 /**
  * Error Handler.
@@ -126,7 +179,6 @@ if (process.env.NODE_ENV === 'development') {
  */
 app.listen(app.get('port'), () => {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env'));
-  console.log('  Press CTRL-C to stop\n');
 });
 
 /**

@@ -1,9 +1,10 @@
+
 /**
  * GET /
- * Home page.
+ * Show the main application.
  */
 exports.index = (req, res) => {
   res.render('home', {
-    title: 'Home'
+    title: 'Simulador de Cajero Automático',
   });
 };
